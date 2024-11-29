@@ -1,40 +1,44 @@
-# Process model forecasting
-Process Model Forecasting Using Time Series Analysis of Event Sequence Data
+# Прогнозирование моделей процессов  
+Прогнозирование моделей процессов с использованием анализа временных рядов последовательности событий  
 
-## About
-Process analytics is the field focusing on predictions for individual process instances or overall process models. At the instance level, various novel techniques have been recently devised, tackling next activity, remaining time, and outcome prediction. At the model level, there is a notable void. It is the ambition of this paper to fill this gap. To this end, we develop a technique to forecast the entire process model from historical event data. A forecasted model is a will-be process model representing a probable future state of the overall process. Such a forecast helps to investigate the consequences of drift and emerging bottlenecks. 
-Our technique builds on a representation of event data as multiple time series, each capturing the evolution of a behavioural aspect of the process model, such that corresponding forecasting techniques can be applied.
-Our implementation demonstrates the accuracy of our technique on real-world event log data.
+## О проекте  
+Аналитика процессов — это область, ориентированная на прогнозирование отдельных экземпляров процессов или общих моделей процессов. На уровне отдельных экземпляров были недавно разработаны различные инновационные методы, решающие задачи прогнозирования следующего действия, оставшегося времени и результата. Однако на уровне моделей существует значительный пробел, который данный документ стремится заполнить.  
 
-## Implementation
-The implementation is based on Python and uses the following packages:
-- [pm4py](https://pm4py.fit.fraunhofer.de/)
-- [statsmodels](https://www.statsmodels.org/stable/index.html)
-- [scikit-learn](https://scikit-learn.org/stable/)
-- [numpy](https://numpy.org/)
-- [arch package](https://pypi.org/project/arch/)
-- [entropia](https://github.com/jbpt/codebase/tree/master/jbpt-pm/entropia): make sure to include jbpt-pm-entropia-1.6.jar as well as the lib directory next to the Python code as this is used to calculate the entropic relevance
+Для этого мы разработали технику прогнозирования всей модели процесса на основе исторических данных о событиях. Прогнозируемая модель представляет собой возможное будущее состояние всей модели процесса. Такой прогноз позволяет изучить последствия изменений и выявить потенциальные узкие места.  
 
-## Datasets
-We used 6 datasets, as-is from the following locations:
-- [RTFMP](https://doi.org/10.4121/uuid:270fd440-1057-4fb9-89a9-b699b47990f5)
-- [BPI12](https://doi.org/10.4121/uuid:3926db30-f712-4394-aebc-75976070e91f)
-- [BPI17](https://doi.org/10.4121/uuid:5f3067df-f10b-45da-b98b-86ae4c7a310b)
-- [BPI18](https://doi.org/10.4121/uuid:3301445f-95e8-4ff0-98a4-901f1f204972)
-- [Sepsis](https://doi.org/10.4121/uuid:915d2bfb-7e84-49ad-a286-dc35f063a460)
-- [Italian](https://doi.org/10.4121/uuid:0c60edf1-6f83-4e75-9367-4c63b3e9d5bb)
+Наша методика основана на представлении данных событий в виде нескольких временных рядов, каждый из которых отражает эволюцию определенного поведенческого аспекта модели процесса, что позволяет применять соответствующие методы прогнозирования.  
 
-Note that the ones included in [datasets](/datasets) need to be unzipped.
+Реализация метода продемонстрировала его точность на данных реальных журналов событий.  
 
-## Parameters and use
-You can use the main Python file [create_dfg_forecasts.py](/python/create_dfg_forecasts.py) with the following parameters:
+## Реализация  
+Реализация выполнена на Python с использованием следующих библиотек:  
+- [pm4py](https://pm4py.fit.fraunhofer.de/)  
+- [statsmodels](https://www.statsmodels.org/stable/index.html)  
+- [scikit-learn](https://scikit-learn.org/stable/)  
+- [numpy](https://numpy.org/)  
+- [arch package](https://pypi.org/project/arch/)  
+- [entropia](https://github.com/jbpt/codebase/tree/master/jbpt-pm/entropia): обязательно включите `jbpt-pm-entropia-1.6.jar` и директорию `lib` рядом с Python-кодом, так как они используются для расчета энтропийной релевантности.  
 
-- dataset (e.g. 'rtfmp'): should be the name of an included .xes file
-- agg_type ('equisize' or 'equitemp'): aggregation used to collect events in intervals (equisize: the same number of events in every intervals, equisize: every intervals has the same timespan)
-- no_pairs (integer): use to limit to the #no_pairs most frequent DF pairs. Use 0 to use all activity pairs.
-- horizon (integer): number of intervals forecasted, i.e., the forecasting horizon
-- no_intervals_all (integer): number of intervals in whic the log will be split
-- no_intervals (integer): number of intervals (out of all the intervals) used for the whole dataset (length of training set = no_intervals - horizon)
-- no_folds (integer): number of folds used for cross-validation
+## Датасеты  
+Использовались 6 наборов данных из следующих источников:  
+- [RTFMP](https://doi.org/10.4121/uuid:270fd440-1057-4fb9-89a9-b699b47990f5)  
+- [BPI12](https://doi.org/10.4121/uuid:3926db30-f712-4394-aebc-75976070e91f)  
+- [BPI17](https://doi.org/10.4121/uuid:5f3067df-f10b-45da-b98b-86ae4c7a310b)  
+- [BPI18](https://doi.org/10.4121/uuid:3301445f-95e8-4ff0-98a4-901f1f204972)  
+- [Sepsis](https://doi.org/10.4121/uuid:915d2bfb-7e84-49ad-a286-dc35f063a460)  
+- [Italian](https://doi.org/10.4121/uuid:0c60edf1-6f83-4e75-9367-4c63b3e9d5bb)  
 
-The generated outcome (.csv file) will include the cosine distance, root mean square error and entropic relevance of both the forecasted and actual DFGs.
+Обратите внимание, что датасеты в папке [datasets](/datasets) необходимо распаковать.  
+
+## Параметры и использование  
+Для запуска можно использовать основной Python-файл [create_dfg_forecasts.py](/python/create_dfg_forecasts.py) с такими параметрами:  
+
+- **dataset** (например, `'rtfmp'`): имя включенного `.xes` файла.  
+- **agg_type** (`'equisize'` или `'equitemp'`): способ агрегации событий в интервалы (equisize: одинаковое количество событий в каждом интервале, equitemp: одинаковая временная продолжительность каждого интервала).  
+- **no_pairs** (целое число): ограничение количества наиболее частых пар DFG. Укажите `0`, чтобы использовать все пары действий.  
+- **horizon** (целое число): количество прогнозируемых интервалов, т.е. горизонт прогнозирования.  
+- **no_intervals_all** (целое число): общее количество интервалов, на которые будет разбит лог.  
+- **no_intervals** (целое число): количество интервалов (из общего числа интервалов), используемых для всего набора данных (длина обучающего набора = `no_intervals - horizon`).  
+- **no_folds** (целое число): количество фолдов, используемых для перекрёстной проверки.  
+
+Сгенерированный результат (`.csv` файл) будет включать косинусное расстояние, среднеквадратичную ошибку и энтропийную релевантность прогнозируемых и фактических DFG.  
