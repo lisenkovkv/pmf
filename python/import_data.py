@@ -9,13 +9,15 @@ from pm4py.algo.filtering.log.timestamp import timestamp_filter
 from pm4py.algo.discovery.dfg.variants import native
 
 from pm4py.objects.dfg.utils.dfg_utils import infer_start_activities, infer_end_activities
-from pm4py.objects.log.log import EventLog, Trace, Event
+#from pm4py.objects.log.log import EventLog, Trace, Event
+from pm4py.objects.log.obj import EventLog, Trace, Event
 from pm4py.objects.log.exporter.xes.variants import etree_xes_exp as exporter
 
 
 class ActivityPair:
 
     def __init__(self, a1, a2, timestamp, event, event2, trace_no):
+        
         self.a1 = a1
         self.a2 = a2
         self.timestamp = timestamp

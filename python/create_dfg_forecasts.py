@@ -37,7 +37,7 @@ paras = {variant.value.Parameters.MAX_TRACES: 1000000000}
 log = xes_importer.apply(dataset + '.xes', parameters=paras)
 
 # read and encode data
-activity_names = pm4py.get_attribute_values(log, 'concept:name')
+activity_names = pm4py.get_event_attribute_values(log, 'concept:name')
 no_act = len(activity_names)
 act_map = {}
 reverse_map = {}
@@ -229,9 +229,28 @@ with open(f'results_{dataset}_nopairs_{no_pairs}_nointervals_{str(no_intervals)}
                 offset = no_intervals - horizon + h - fold
                 er_actual = calculate_entropic_relevance(f'./logs/{dataset}_log_interval_{offset}-{no_intervals_all}_{agg_type}', 'temp')
 
-                # store results
-                results = np.reshape(results_selected[::, fold, h], (1, len(chosen_pairs)))
-                actuals = np.reshape(actual_selected[::, fold, h], (1, len(chosen_pairs)))
+                # Проверка данных
+                results = results_selected[:, fold, h]
+                actuals = actual_selected[:, fold, h]
+
+                # Проверка на NaN и бесконечные значения
+                if np.any(np.isnan(results)) or np.any(np.isnan(actuals)):
+                    raise ValueError("Массивы содержат NaN значения.")
+                if np.any(np.isinf(results)) or np.any(np.isinf(actuals)):
+                    raise ValueError("Массивы содержат бесконечные значения.")
+
+                # Преобразование в одномерные массивы
+                results = results.reshape(-1)
+                actuals = actuals.reshape(-1)
+
+                # Проверка на совпадение длины массивов
+                if len(results) != len(actuals):
+                    raise ValueError("Массивы results и actuals имеют разную длину.")
+
+                # Проверка на числовой тип
+                if not np.issubdtype(results.dtype, np.number) or not np.issubdtype(actuals.dtype, np.number):
+                    raise ValueError("Массивы results и actuals должны содержать только числовые данные.")
+
 
                 cosine = distance.cosine(results, actuals)
                 rmse = sqrt(mean_squared_error(actuals, results))
